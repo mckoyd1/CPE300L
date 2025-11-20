@@ -41,10 +41,21 @@ module testbench_MultiCycle();
 endmodule
 
 module top(input  logic        clk, reset, 
-           output logic [31:0] WriteData, Adr, 
-           output logic        MemWrite);
+           output logic [31:0] WriteData, Adr, PC,
+           output logic        MemWrite,
+           output logic [6:0] HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7);
 
-  logic [31:0] PC, Instr, ReadData, SrcA, SrcB, ALUResult;
+  logic [31:0] Instr, ReadData, SrcA, SrcB, ALUResult;
+
+  sevenseg_decoder sevenseg_decoder0(Instr[31:28], HEX7);
+  sevenseg_decoder sevenseg_decoder1(Instr[27:24], HEX6);
+  sevenseg_decoder sevenseg_decoder2(Instr[23:20], HEX5);
+  sevenseg_decoder sevenseg_decoder3(Instr[19:16], HEX4);
+  sevenseg_decoder sevenseg_decoder4(Instr[15:12], HEX3);
+  sevenseg_decoder sevenseg_decoder5(Instr[11:8], HEX2);
+  sevenseg_decoder sevenseg_decoder6(Instr[7:4], HEX1);
+  sevenseg_decoder sevenseg_decoder7(Instr[3:0], HEX0); 
+  
   
   // instantiate processor and memories
   riscvmulti rvmulti(clk, reset, PC, SrcA, SrcB, Instr, MemWrite, Adr,
@@ -526,7 +537,7 @@ module imem(input  logic [31:0] a,
   logic [31:0] RAM[63:0];
 
   initial
-      $readmemh("riscvtest.txt",RAM);
+      $readmemh("riscvtest2.txt",RAM);
 
   assign rd = RAM[a[31:2]]; // word aligned
 endmodule
@@ -604,5 +615,30 @@ logic [2:0] controls;
       default:    controls = 3'bxxx; // non-implemented instruction
     endcase 
 
+
+endmodule
+
+module sevenseg_decoder(input  logic [3:0] data,
+                        output logic [6:0] segments);
+
+  always_comb
+  case (data)         //Sg - Sa
+    4'h0: segments = 7'b1000000;
+    4'h1: segments = 7'b1111001;
+    4'h2: segments = 7'b0100100;
+    4'h3: segments = 7'b0110000;
+    4'h4: segments = 7'b0011001;
+    4'h5: segments = 7'b0010010;
+    4'h6: segments = 7'b0000010;
+    4'h7: segments = 7'b1111000;
+    4'h8: segments = 7'b0000000;
+    4'h9: segments = 7'b0011000;
+    4'hA: segments = 7'b0001000;
+    4'hB: segments = 7'b0000011;
+    4'hC: segments = 7'b0100111;
+    4'hD: segments = 7'b0100001;
+    4'hE: segments = 7'b0000110;
+    4'hF: segments = 7'b0001110;
+  endcase
 
 endmodule
