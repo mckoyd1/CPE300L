@@ -1,0 +1,12 @@
+# Put the following in instruction memory to test:
+lui  x3, 0xABCDE       # x3 = 0xABCDE                                   abcde1b7
+addi x6, x0, 5         # x6 = 5                                         00500313
+slli x5, x6, 3         # x5 = 5 << 3 = 40                               00331293
+addi x6, x0, 5         # x6 = 5                                         00500313
+srli x5, x6, 3         # x5 = 5 << 3 = 0                                00335293
+addi  x1, x0, -1       # x1 = 0xFFFFFFFF                                fff00093
+sltiu x2, x1, 1        # x2 = (0xFFFFFFFF < 1) ? 1 : 0 → result = 0     0010b113
+sltiu x3, x0, 1        # x3 = (0 < 1) ? 1 : 0 → result = 1              00103193
+auipc x1 1	                                                        00001097
+auipc x2 2	                                                        00002117
+auipc x2 703710	                                                        abcde117
